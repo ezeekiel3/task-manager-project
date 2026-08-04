@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import DialogCreateTask from './components/DialogCreateTask'
-import TaskItem from './components/TaskItem'
-import DialogEditTask from './components/DialogEditTask'
+import DialogCreateTask from '../components/DialogCreateTask'
+import TaskItem from '../components/TaskItem'
+import DialogEditTask from '../components/DialogEditTask'
 
 export type Task = {
     id: number

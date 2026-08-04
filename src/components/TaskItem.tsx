@@ -1,5 +1,5 @@
 import { type Dispatch, type SetStateAction } from 'react'
-import { type Task } from '../App'
+import { type Task } from '../pages/App'
 import TaskDetail from './TaskDetail'
 
 type TaskItemType = {

@@ -5,10 +5,12 @@ import { tasksTable, usersTable } from '../db/schema'
 import cors from 'cors'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import cookieParser from 'cookie-parser'
 
 const app = express()
 const port = 3000
 
+app.use(cookieParser())
 app.use(cors())
 app.use(express.json())
 
@@ -57,12 +59,9 @@ app.post('/register', async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
 
-        const userCreated = await db
-            .insert(usersTable)
-            .values({ username: req.body!.username, password: hashedPassword })
-            .returning()
+        await db.insert(usersTable).values({ username: req.body.username, password: hashedPassword })
 
-        res.status(201).json(userCreated)
+        res.status(201).json({ username: req.body.username })
     } catch (error: any) {
         res.status(500).json({ error: 'Internal Server Error' })
     }
@@ -78,19 +77,22 @@ app.post('/login', async (req, res) => {
             return res.status(400).json({ error: 'password must be at least 6 characters long' })
         }
 
-        const [user] = await db
-            .select({ id: usersTable.id, username: usersTable.username, password: usersTable.password })
-            .from(usersTable)
+        const [user] = await db.select().from(usersTable).where(eq(usersTable.username, req.body.username))
 
-        if (!user.username.includes(req.body.username)) {
-            return res.status(400).json({ error: 'username does not exist' })
+        if (!user) {
+            return res.status(400).json({ error: 'Invalid username or password' })
         } else {
             const isValid = await bcrypt.compare(req.body.password, user.password)
             if (!isValid) {
                 return res.status(401).json({ error: 'password is invalid' })
             }
 
-            res.status(201).json({ id: user.id, username: user.username })
+            const token = jwt.sign({ id: user.id, username: user.username }, process.env.SECRET_JWT!, {
+                expiresIn: '1h',
+            })
+            res.status(201)
+                .cookie('access_token', token, { httpOnly: true, sameSite: 'strict', maxAge: 1000 * 60 * 60 })
+                .json({ id: user.id, username: user.username, token: token })
         }
     } catch (error: any) {
         res.status(500).json({ error: 'Internal Server Error' })

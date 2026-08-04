@@ -12,6 +12,7 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
     "@types/cookie-parser": "^1.4.10",
+    "@types/react-router": "^5.1.20",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
@@ -22,6 +23,7 @@
     "pg": "^8.22.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "react-router": "^8.3.0",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
