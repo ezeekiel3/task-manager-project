@@ -1,4 +1,4 @@
-import { pgTable, varchar, text, timestamp, serial } from 'drizzle-orm/pg-core'
+import { pgTable, integer, varchar, text, timestamp, serial } from 'drizzle-orm/pg-core'
 
 export const usersTable = pgTable('users', {
     id: serial('id').primaryKey(),
@@ -16,7 +16,7 @@ export const tasksTable = pgTable('tasks', {
     dueDate: timestamp('due_date'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
-    // userId: integer('user_id')
-    //     .notNull()
-    //     .references(() => usersTable.id),
+    userId: integer('user_id')
+        .notNull()
+        .references(() => usersTable.id),
 })
