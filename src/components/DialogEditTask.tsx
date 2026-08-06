@@ -1,5 +1,5 @@
 import { type Dispatch, type SetStateAction } from 'react'
-import type { Task } from '../pages/App'
+import type { Task } from '../App'
 
 type DialogEditTaskType = {
     idTask: number
@@ -15,6 +15,9 @@ type DialogEditTaskType = {
     setPriorityTask: Dispatch<SetStateAction<string>>
     dueDate: string
     setDueDate: Dispatch<SetStateAction<string>>
+    authenticated: boolean
+    tasks: Task[]
+    setTasks: Dispatch<SetStateAction<Task[]>>
 }
 
 function DialogEditTask({
@@ -31,13 +34,29 @@ function DialogEditTask({
     setPriorityTask,
     dueDate,
     setDueDate,
+    authenticated,
+    tasks,
+    setTasks,
 }: DialogEditTaskType) {
     async function editTask(editingTask: Task) {
-        await fetch('http://localhost:3000/tasks', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(editingTask),
-        })
+        if (authenticated) {
+            await fetch('http://localhost:3000/tasks', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(editingTask),
+            })
+        } else {
+            const updatedTasks = tasks.map((task) => {
+                if (task.id === editingTask.id) {
+                    return editingTask
+                }
+
+                return task
+            })
+
+            setTasks(updatedTasks)
+            localStorage.setItem('tasks', JSON.stringify(updatedTasks))
+        }
     }
 
     return (
@@ -112,7 +131,7 @@ function DialogEditTask({
                                 description: descriptionTask,
                                 status: statusTask,
                                 priority: priorityTask,
-                                dueDate: dueDate.split('T')[0],
+                                dueDate: dueDate,
                             })
                             setOpenDialogEditTask(false)
                         }}>

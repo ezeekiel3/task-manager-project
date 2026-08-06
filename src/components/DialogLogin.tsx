@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router'
 
-function Login() {
+type DialogLoginProps = {
+    openDialogLogin: boolean
+}
+
+function Login({ openDialogLogin }: DialogLoginProps) {
     const [user, setUser] = useState<string>('')
     const [password, setPassword] = useState<string>('')
-
-    const navigate = useNavigate()
 
     async function login(userText: string, passwordText: string) {
         const response = await fetch('http://localhost:3000/login', {
@@ -22,30 +23,26 @@ function Login() {
         const data = await response.json()
 
         if (response.ok) {
-            navigate('/app')
         }
     }
 
     return (
-        <div className='bg-gray-300 h-screen w-screen flex justify-center items-center'>
-            <div className='bg-gray-200 h-1/3 w-1/3 flex flex-col rounded-md shadow-md'>
-                <h1>Your Tasks App!</h1>
+        <div
+            className={`bg-black/70 h-screen w-screen flex justify-center items-center absolute ${openDialogLogin ? 'flex' : 'hidden'}`}>
+            <div className='bg-gray-50 rounded-md h-1/2 w-1/2 flex justify-center items-center flex-col'>
+                <h1 className='text-2xl mb-4'>Log In or Sign In</h1>
                 <div className='flex gap-10 flex-col'>
                     <input
                         type='text'
-                        onChange={(e) => setUser(e.target.value)}
-                        className='bg-gray-700 text-white'
-                        placeholder='User...'
+                        placeholder='Username...'
+                        className='outline-none bg-gray-500 text-gray-100 px-3 rounded-md text-xl py-5'
                     />
                     <input
                         type='password'
-                        onChange={(e) => setPassword(e.target.value)}
-                        className='bg-gray-700 text-white'
                         placeholder='Password...'
+                        className='outline-none bg-gray-500 text-gray-100 px-3 rounded-md text-xl py-5'
                     />
-                    <button onClick={() => login(user, password)} className='cursor-pointer'>
-                        Sign In
-                    </button>
+                    <button className='cursor-pointer'>Log In/Sign In</button>
                 </div>
             </div>
         </div>

@@ -1,6 +1,7 @@
 import { type Dispatch, type SetStateAction } from 'react'
+import type { Task } from '../App'
 
-type DialogCreateTaskType = {
+type DialogCreateTaskProps = {
     openDialogCreateTask: boolean
     setOpenDialogCreateTask: Dispatch<SetStateAction<boolean>>
     titleTask: string
@@ -13,6 +14,9 @@ type DialogCreateTaskType = {
     setPriorityTask: Dispatch<SetStateAction<string>>
     dueDate: string
     setDueDate: Dispatch<SetStateAction<string>>
+    authenticated: boolean
+    setTasks: Dispatch<SetStateAction<Task[]>>
+    tasks: Task[]
 }
 
 function DialogCreateTask({
@@ -28,25 +32,61 @@ function DialogCreateTask({
     setPriorityTask,
     dueDate,
     setDueDate,
-}: DialogCreateTaskType) {
-    async function createTask(
+    authenticated,
+    setTasks,
+    tasks,
+}: DialogCreateTaskProps) {
+    async function handleSubmitTask(
         task: string,
         description: string,
         statusTask: string,
         priorityTask: string,
         dueDateTask: string,
     ) {
-        await fetch('http://localhost:3000/tasks', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+        let id: number
+        if (authenticated) {
+            const response = await fetch('http://localhost:3000/tasks', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: task,
+                    description: description,
+                    status: statusTask,
+                    priority: priorityTask,
+                    dueDate: dueDateTask,
+                }),
+            })
+            id = (await response.json()).id as number
+        } else {
+            const localTasks = JSON.parse(localStorage.getItem('tasks') ?? 'null') as Task[] | null
+            const nextId = (localTasks?.at(-1)?.id ?? -1) + 1
+            localStorage.setItem(
+                'tasks',
+                JSON.stringify([
+                    ...tasks,
+                    {
+                        id: nextId,
+                        title: task,
+                        description: description,
+                        priority: priorityTask,
+                        status: statusTask,
+                        dueDate: dueDateTask,
+                    },
+                ]),
+            )
+            id = nextId
+        }
+        setTasks([
+            ...tasks,
+            {
+                id,
                 title: task,
                 description: description,
-                status: statusTask,
                 priority: priorityTask,
-                dueDate: dueDateTask.split('T')[0],
-            }),
-        })
+                status: statusTask,
+                dueDate: dueDateTask,
+            },
+        ])
     }
 
     return (
@@ -115,7 +155,7 @@ function DialogCreateTask({
                     <button
                         className='bg-black text-white text-xl px-3 py-1 rounded-md cursor-pointer hover:bg-black/80 duration-200'
                         onClick={() => {
-                            createTask(titleTask, descriptionTask, statusTask, priorityTask, dueDate)
+                            handleSubmitTask(titleTask, descriptionTask, statusTask, priorityTask, dueDate)
                             setOpenDialogCreateTask(false)
                         }}>
                         Save

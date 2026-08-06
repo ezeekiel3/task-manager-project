@@ -19,6 +19,22 @@ app.get('/tasks', async (req, res) => {
     res.json(tasks)
 })
 
+app.get('/me', (req, res) => {
+    const token = req.cookies.access_token
+
+    if (!token) {
+        return res.json({ authenticated: false })
+    }
+
+    try {
+        jwt.verify(token, process.env.JWT_SECRET!)
+
+        return res.status(201).json({ authenticated: true })
+    } catch {
+        return res.status(401).json({ authenticated: false })
+    }
+})
+
 app.post('/tasks', async (req, res) => {
     const taskAdded = await db
         .insert(tasksTable)
