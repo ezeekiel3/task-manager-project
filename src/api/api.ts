@@ -96,7 +96,7 @@ app.post('/login', async (req, res) => {
         const [user] = await db.select().from(usersTable).where(eq(usersTable.username, req.body.username))
 
         if (!user) {
-            return res.status(400).json({ error: 'Invalid username or password' })
+            return res.status(401).json({ error: 'Invalid username or password' })
         } else {
             const isValid = await bcrypt.compare(req.body.password, user.password)
             if (!isValid) {
