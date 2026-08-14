@@ -119,7 +119,7 @@ function App() {
                     setTasks={setTasks}
                 />
             ))}
-            <DialogLogin openDialogLogin={openDialogLogin} />
+            <DialogLogin openDialogLogin={openDialogLogin} setOpenDialogLogin={setOpenDialogLogin} />
         </div>
     )
 }
