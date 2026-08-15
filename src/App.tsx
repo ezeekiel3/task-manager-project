@@ -27,7 +27,9 @@ function App() {
 
     useEffect(() => {
         async function getTasks() {
-            const response = await fetch('http://localhost:3000/me')
+            const response = await fetch('http://localhost:3000/me', {
+                credentials: 'include',
+            })
             const data = await response.json()
 
             if (data.authenticated) {

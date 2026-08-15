@@ -11,7 +11,12 @@ const app = express()
 const port = 3000
 
 app.use(cookieParser())
-app.use(cors())
+app.use(
+    cors({
+        origin: 'http://localhost:5173',
+        credentials: true,
+    }),
+)
 app.use(express.json())
 
 app.get('/tasks', async (req, res) => {
@@ -103,7 +108,7 @@ app.post('/login', async (req, res) => {
                 return res.status(401).json({ error: 'password is invalid' })
             }
 
-            const token = jwt.sign({ id: user.id, username: user.username }, process.env.SECRET_JWT!, {
+            const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET!, {
                 expiresIn: '1h',
             })
             res.status(201)
@@ -111,6 +116,7 @@ app.post('/login', async (req, res) => {
                 .json({ id: user.id, username: user.username, token: token })
         }
     } catch (error: any) {
+        console.error(error)
         res.status(500).json({ error: 'Internal Server Error' })
     }
 })

@@ -5,7 +5,7 @@ type DialogLoginProps = {
     setOpenDialogLogin: Dispatch<SetStateAction<boolean>>
 }
 
-function Login({ openDialogLogin, setOpenDialogLogin }: DialogLoginProps) {
+function login({ openDialogLogin, setOpenDialogLogin }: DialogLoginProps) {
     const [displayError, setDisplayError] = useState<string>('')
     const [dialogRegister, setDialogRegister] = useState<boolean>(false)
     const [user, setUser] = useState<string>('')
@@ -17,6 +17,7 @@ function Login({ openDialogLogin, setOpenDialogLogin }: DialogLoginProps) {
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify({
                 username: userText,
                 password: passwordText,
@@ -31,6 +32,9 @@ function Login({ openDialogLogin, setOpenDialogLogin }: DialogLoginProps) {
         }
 
         setDisplayError('')
+        setUser('')
+        setPassword('')
+        setOpenDialogLogin(false)
     }
 
     async function register(userText: string, passwordText: string) {
@@ -53,18 +57,30 @@ function Login({ openDialogLogin, setOpenDialogLogin }: DialogLoginProps) {
         }
 
         setDisplayError('')
+        setDialogRegister(false)
     }
 
     return (
         <div
             className={`bg-black/70 h-screen w-screen flex justify-center items-center absolute ${openDialogLogin ? 'flex' : 'hidden'}`}>
             <div className='bg-gray-50 rounded-xl h-3/4 w-1/3 flex justify-center items-center flex-col'>
-                <div className='mb-4'>
+                <div className={`mb-4 w-8/12 flex ${dialogRegister ? 'justify-between' : 'justify-end'}`}>
+                    <svg
+                        onClick={() => setDialogRegister(false)}
+                        className={`${dialogRegister ? 'flex' : 'hidden'} cursor-pointer`}
+                        xmlns='http://www.w3.org/2000/svg'
+                        height='40px'
+                        viewBox='0 -960 960 960'
+                        width='40px'
+                        fill='#000000'>
+                        <path d='m287-446.67 240 240L480-160 160-480l320-320 47 46.67-240 240h513v66.66H287Z' />
+                    </svg>
                     <svg
                         className='cursor-pointer'
                         onClick={() => {
                             setOpenDialogLogin(false)
                             setDialogRegister(false)
+                            setDisplayError('')
                         }}
                         xmlns='http://www.w3.org/2000/svg'
                         height='40px'
@@ -132,7 +148,12 @@ function Login({ openDialogLogin, setOpenDialogLogin }: DialogLoginProps) {
                         <p className='text-lg'>Don't have an account?</p>
                         <button
                             className='text-blue-600 cursor-pointer font-bold hover:text-blue-500 duration-200'
-                            onClick={() => setDialogRegister(true)}>
+                            onClick={() => {
+                                setDialogRegister(true)
+                                setDisplayError('')
+                                setUser('')
+                                setPassword('')
+                            }}>
                             Sign Up
                         </button>
                     </div>
@@ -142,4 +163,4 @@ function Login({ openDialogLogin, setOpenDialogLogin }: DialogLoginProps) {
     )
 }
 
-export default Login
+export default login
