@@ -17,6 +17,7 @@ type DialogCreateTaskProps = {
     authenticated: boolean
     setTasks: Dispatch<SetStateAction<Task[]>>
     tasks: Task[]
+    darkMode: boolean
 }
 
 function DialogCreateTask({
@@ -35,6 +36,7 @@ function DialogCreateTask({
     authenticated,
     setTasks,
     tasks,
+    darkMode,
 }: DialogCreateTaskProps) {
     async function handleSubmitTask(
         task: string,
@@ -48,6 +50,7 @@ function DialogCreateTask({
             const response = await fetch('http://localhost:3000/tasks', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({
                     title: task,
                     description: description,
@@ -92,14 +95,14 @@ function DialogCreateTask({
     return (
         <div
             className={`${openDialogCreateTask ? 'flex' : 'hidden'} absolute bg-black/70 h-full w-full justify-center items-center`}>
-            <div className='bg-gray-100 shadow-md rounded-lg w-1/3 flex-col p-6'>
+            <div className={`${darkMode ? 'bg-gray-700' : 'bg-gray-100'} shadow-md rounded-lg w-1/3 flex-col p-6`}>
                 <div className='h-full w-full'>
-                    <h2 className='text-2xl'>Create Task</h2>
-                    <p className='mt-1'>Add a new task to your list.</p>
+                    <h2 className={`text-2xl ${darkMode ? 'text-white' : 'text-black'}`}>Create Task</h2>
+                    <p className={`mt-1 ${darkMode ? 'text-white' : 'text-black'}`}>Add a new task to your list.</p>
                 </div>
                 <div className='flex mt-5 gap-5 flex-col'>
                     <div>
-                        <p className='text-xl mb-2'>Title</p>
+                        <p className={`text-xl mb-2 ${darkMode ? 'text-white' : 'text-black'}`}>Title</p>
                         <input
                             type='text'
                             className='bg-gray-200 text-lg outline-none p-2 border-lg w-2/3 rounded-lg focus:border-gray-400 border-3 border-gray-400/0 duration-200'
@@ -108,47 +111,51 @@ function DialogCreateTask({
                         />
                     </div>
                     <div>
-                        <p className='text-xl mb-2'>Description</p>
+                        <p className={`text-xl mb-2 ${darkMode ? 'text-white' : 'text-black'}`}>Description</p>
                         <textarea
-                            name=''
-                            id=''
                             placeholder='Description...'
                             className='bg-gray-200 resize-none text-lg border-lg rounded-lg w-2/3 outline-none p-2 focus:border-gray-400 border-3 border-gray-400/0'
                             onChange={(e) => setDescriptionTask(e.target.value)}></textarea>
                     </div>
                     <div className='flex-col flex gap-3 w-1/4'>
-                        <label htmlFor='Status' className='text-xl w-full'>
+                        <label htmlFor='Status' className={`text-xl w-full ${darkMode ? 'text-white' : 'text-black'}`}>
                             Status
                         </label>
                         <select
                             onChange={(e) => setStatusTask(e.target.value)}
-                            name=''
                             id='Status'
-                            className='w-full py-3 rounded-md text-lg hover:bg-gray-200 duration-200 px-3 focus:bg-gray-200'>
+                            className={`w-full py-3 rounded-md text-lg hover:bg-gray-500 duration-200 px-3 focus:bg-gray-500 ${darkMode ? 'text-white' : 'text-black'}`}>
                             <option value='pending'>Pending</option>
                             <option value='in_progress'>In Progress</option>
                             <option value='completed'>Completed</option>
                         </select>
                     </div>
                     <div className='flex-col flex gap-3 w-1/4'>
-                        <label htmlFor='Priority' className='text-xl w-full'>
+                        <label
+                            htmlFor='Priority'
+                            className={`text-xl w-full ${darkMode ? 'text-white' : 'text-black'}`}>
                             Priority
                         </label>
                         <select
                             onChange={(e) => setPriorityTask(e.target.value)}
-                            name=''
                             id='Priority'
-                            className='w-full py-3 rounded-md text-lg hover:bg-gray-200 duration-200 px-3 focus:bg-gray-200'>
+                            className={`w-full py-3 rounded-md text-lg hover:bg-gray-500 duration-200 px-3 focus:bg-gray-500 ${darkMode ? 'text-white' : 'text-black'}`}>
                             <option value='low'>Low</option>
                             <option value='medium'>Medium</option>
                             <option value='high'>High</option>
                         </select>
                     </div>
                     <div className='flex-col flex gap-3 w-1/4'>
-                        <label htmlFor='due_date' className='text-xl w-full'>
+                        <label
+                            htmlFor='due_date'
+                            className={`text-xl w-full ${darkMode ? 'text-white' : 'text-black'}`}>
                             Due Date
                         </label>
-                        <input type='date' onChange={(e) => setDueDate(e.target.value)} />
+                        <input
+                            type='date'
+                            onChange={(e) => setDueDate(e.target.value)}
+                            className={`${darkMode ? 'text-white' : 'text-black'}`}
+                        />
                     </div>
                 </div>
                 <div className='flex flex-row-reverse gap-4 mt-10'>

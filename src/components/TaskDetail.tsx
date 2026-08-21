@@ -21,7 +21,7 @@ function TaskDetail({ status, priority, dueDate }: TaskDetailType) {
                     {priority}
                 </p>
             </div>
-            <div className={`flex-row gap-1 ${dueDate === '' ? 'hidden' : 'flex'}`}>
+            <div className={`flex-row gap-1 ${dueDate === null ? 'hidden' : 'flex'}`}>
                 <h4 className='font-bold text-gray-700/85'>Due Date:</h4>
                 <p className='font-bold'>{dueDate}</p>
             </div>

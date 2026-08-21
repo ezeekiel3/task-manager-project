@@ -8,9 +8,10 @@ type TaskItemProps = {
     tasks: Task[]
     setTasks: Dispatch<SetStateAction<Task[]>>
     authenticated: boolean
+    darkMode: boolean
 }
 
-function TaskItem({ setOpenDialogEditTask, tasks, setTasks, task, authenticated }: TaskItemProps) {
+function TaskItem({ setOpenDialogEditTask, tasks, setTasks, task, authenticated, darkMode }: TaskItemProps) {
     async function deleteTask(id: number) {
         if (authenticated) {
             await fetch('http://localhost:3000/tasks', {
@@ -26,11 +27,12 @@ function TaskItem({ setOpenDialogEditTask, tasks, setTasks, task, authenticated 
     }
 
     return (
-        <div className='border rounded-lg hover:shadow-md w-full duration-200 gap-0.5 px-3.5 py-2.5 flex justify-center flex-col border-gray-400/60'>
+        <div
+            className={`border ${darkMode ? 'bg-gray-950' : ''} rounded-lg hover:shadow-md w-full duration-200 gap-0.5 px-3.5 py-2.5 flex justify-center flex-col border-gray-400/60`}>
             <div className='flex justify-between'>
                 <div className='flex flex-col'>
-                    <h3 className='text-xl'>{task.title}</h3>
-                    <p>{task.description}</p>
+                    <h3 className={`text-xl ${darkMode ? 'text-white' : 'text-black'}`}>{task.title}</h3>
+                    <p className={`${darkMode ? 'text-white' : 'text-black'}`}>{task.description}</p>
                 </div>
                 <div className='flex flex-col mr-10'>
                     <TaskDetail status={task.status} priority={task.priority} dueDate={task.dueDate!} />
@@ -43,7 +45,7 @@ function TaskItem({ setOpenDialogEditTask, tasks, setTasks, task, authenticated 
                     Delete
                 </button>
                 <button
-                    className='border-2 cursor-pointer px-3 text-center rounded-md hover:bg-gray-100 duration-200'
+                    className={`${darkMode ? 'text-white hover:bg-gray-700' : 'text-black hover:bg-gray-100'} border-2 cursor-pointer px-3 text-center rounded-md duration-200`}
                     onClick={() => setOpenDialogEditTask(true)}>
                     Edit
                 </button>

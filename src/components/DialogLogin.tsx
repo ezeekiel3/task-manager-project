@@ -35,6 +35,7 @@ function login({ openDialogLogin, setOpenDialogLogin }: DialogLoginProps) {
         setUser('')
         setPassword('')
         setOpenDialogLogin(false)
+        window.location.reload()
     }
 
     async function register(userText: string, passwordText: string) {

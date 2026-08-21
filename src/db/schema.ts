@@ -1,4 +1,8 @@
-import { pgTable, integer, varchar, text, timestamp, serial } from 'drizzle-orm/pg-core'
+import { pgTable, pgEnum, integer, varchar, text, timestamp, serial, date } from 'drizzle-orm/pg-core'
+
+export const statusEnum = pgEnum('status', ['pending', 'in_progress', 'completed'])
+
+export const priorityEnum = pgEnum('priority', ['low', 'medium', 'high'])
 
 export const usersTable = pgTable('users', {
     id: serial('id').primaryKey(),
@@ -11,9 +15,9 @@ export const tasksTable = pgTable('tasks', {
     id: serial('id').primaryKey(),
     title: varchar({ length: 100 }).notNull(),
     description: text('description'),
-    status: varchar({ length: 20 }).default('pending'),
-    priority: varchar({ length: 10 }).default('medium'),
-    dueDate: timestamp('due_date'),
+    status: statusEnum('status').default('pending').notNull(),
+    priority: priorityEnum('priority').default('medium').notNull(),
+    dueDate: date('due_date'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
     userId: integer('user_id')
